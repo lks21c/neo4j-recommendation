@@ -1,0 +1,1 @@
+This is a toy project for recommendation system using collaborative filtering based on neo4j.
