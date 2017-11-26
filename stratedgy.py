@@ -12,7 +12,7 @@ threshold = 0.5
 
 # In Strategy 1, the similarity between two users u1 and u2 is the proportion of movies they have in common
 # The score of one given movie m is the proportion of users similar to u1 who rated m
-print "Strategy #1"
+# print "Strategy #1"
 query = (### Similarity normalization : count number of movies seen by u1 ###
   # Count movies rated by u1 as countm
   'MATCH (u1:`User` {user_id:{user_id}})-[:`Has_rated`]->(m1:`Movie`) '
@@ -46,12 +46,12 @@ query = (### Similarity normalization : count number of movies seen by u1 ###
 tx = graph.cypher.begin()
 tx.append(query, {'user_id': user_id, 'threshold': threshold})
 result = tx.commit()
-print result
+# print result
 
 # stratedgy 2
 # In Strategy 2, the similarity between two users u1 and u2 is the proportion of movies they have in common
 # The score of one movie m is the sum of ratings given by users similar to u1
-print "Strategy #2"
+# print "Strategy #2"
 query = (### Similarity normalization : count number of movies seen by u1 ###
     # Count movies rated by u1 as countm
     'MATCH (m1:`Movie`)<-[:`Has_rated`]-(u1:`User` {user_id:{user_id}}) '
@@ -73,7 +73,7 @@ query = (### Similarity normalization : count number of movies seen by u1 ###
 tx = graph.cypher.begin()
 tx.append(query, {'user_id': user_id, 'threshold': threshold})
 result = tx.commit()
-print result
+# print result
 
 # stratedgy 3
 # In Strategy 3, the similarity between two users is the proportion of movies for which they gave almost the same rating
