@@ -7,7 +7,7 @@ from py2neo import Graph
 
 graph = Graph('http://neo4j:melon123!@localhost:7474/db/data/')
 
-user_id = 943
+user_id = 5 #5
 threshold = 0.5
 
 # In Strategy 1, the similarity between two users u1 and u2 is the proportion of movies they have in common
@@ -41,7 +41,7 @@ query = (### Similarity normalization : count number of movies seen by u1 ###
   'MATCH (m:`Movie`)<-[r:`Has_rated`]-(u2) '
   'WHERE NOT (m)<-[:`Has_rated`]-(u1) '
   # Compute score and return the list of suggestions ordered by score
-  'RETURN DISTINCT m, tofloat(count(r))/countu as score ORDER BY score DESC ')
+  'RETURN DISTINCT m, tofloat(count(r))/countu as score ORDER BY score DESC limit 20 ')
 
 tx = graph.cypher.begin()
 tx.append(query, {'user_id': user_id, 'threshold': threshold})
@@ -68,7 +68,7 @@ query = (### Similarity normalization : count number of movies seen by u1 ###
     'MATCH (m:`Movie`)<-[r:`Has_rated`]-(u2) '
     'WHERE (NOT (m)<-[:`Has_rated`]-(u1)) '
     # Compute score and return the list of suggestions ordered by score
-    'RETURN DISTINCT m,tofloat(sum(r.rating)) as score ORDER BY score DESC ')
+    'RETURN DISTINCT m,tofloat(sum(r.rating)) as score ORDER BY score DESC limit 20')
 
 tx = graph.cypher.begin()
 tx.append(query, {'user_id': user_id, 'threshold': threshold})
@@ -98,7 +98,7 @@ query = (### Similarity normalization : count number of movies seen by u1 ###
     # Compute score and return the list of suggestions ordered by score
     'WITH DISTINCT m, count(r) as n_u, tofloat(sum(r.rating)) as sum_r '
     'WHERE n_u > 1 '
-    'RETURN m, sum_r/n_u as score ORDER BY score DESC')
+    'RETURN m, sum_r/n_u as score ORDER BY score DESC limit 20')
 
 tx = graph.cypher.begin()
 tx.append(query, {'user_id': user_id, 'threshold': threshold})
