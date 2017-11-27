@@ -1,8 +1,24 @@
 from __future__ import absolute_import
-from surprise import Dataset, evaluate
+from surprise import Dataset, evaluate, Reader
 from surprise import KNNBasic
+from collections import namedtuple
 
-data = Dataset.load_builtin("ml-100k")
+#data = Dataset.load_builtin("ml-100k")
+BuiltinDataset = namedtuple('BuiltinDataset', ['url', 'path', 'reader_params'])
+
+BUILTIN_DATASETS = {
+    'ml-100k':
+        BuiltinDataset(
+            url='http://files.grouplens.org/datasets/movielens/ml-100k.zip',
+            path='./ml-100k/u.data',
+            reader_params=dict(line_format='user item rating timestamp',
+                               rating_scale=(1, 5),
+                               sep='\t')
+        )
+}
+dataset = BUILTIN_DATASETS["ml-100k"]
+reader = Reader(**dataset.reader_params)
+data = Dataset.load_from_file("./ml-100k/u.data", reader)
 trainingSet = data.build_full_trainset()
 
 sim_options = {
