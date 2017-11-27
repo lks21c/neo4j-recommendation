@@ -43,4 +43,9 @@ def read_item_names():
 top3_recommendations = get_top3_recommendations(predictions)
 rid_to_name = read_item_names()
 for uid, user_ratings in top3_recommendations.items():
-    print(uid, [rid_to_name[iid] for (iid, _) in user_ratings])
+    movie_names = []
+    movie_ratings = []
+    for iid, user_rating in user_ratings:
+        movie_names.append(rid_to_name[iid])
+        movie_ratings.append(user_rating)
+    print(uid, [name for name in movie_names], [rating for rating in movie_ratings])
