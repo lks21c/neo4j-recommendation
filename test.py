@@ -5,7 +5,9 @@ import numpy as np
 import matplotlib as plt
 from py2neo import Graph
 
-graph = Graph('http://neo4j:melon123!@localhost:7474/db/data/')
+password = 'neo4j'
+
+graph = Graph('http://neo4j:' + password + '@localhost:7474/db/data/')
 
 # 사용자 데이터 로드
 user = pd.read_csv('ml-100k/u.user', sep='|', header=None, names=['id','age','gender','occupation','zip code'])
@@ -36,7 +38,7 @@ n_r = rating.shape[0]
 tx = graph.cypher.begin()
 statement = "MERGE (a:`User`{user_id:{A}}) RETURN a"
 for u in user['id']:
-    tx.append(statement, {"A": u})
+    tx.append(statement, {"A": np.asscalar(u)})
 
 tx.commit()
 
@@ -69,7 +71,7 @@ for m,row in movie.iterrows() :
     for g in related_genres :
         # Retrieve node corresponding to genre g, and create relation between g and m
         tx.append(statement2,\
-                  {"A": row.loc['id'], "B": row.loc['title'].decode('latin-1'), "C": row.loc['IMDb url'], "D": g})
+                  {"A": np.asscalar(row.loc['user_id']), "B": np.asscalar(row.loc['rating']), "C": np.asscalar(row.loc['item_id'])})
 
     # Every 100 movies, push queued statements to the server for execution to avoid one massive "commit"
     if m%100==0 : tx.process()
