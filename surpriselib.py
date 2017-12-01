@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import absolute_import
 from surprise import Dataset, evaluate, Reader
 from surprise import KNNBasic
