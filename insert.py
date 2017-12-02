@@ -27,7 +27,7 @@ n_m = movie.shape[0]
 
 # 평점 로드
 rating_col = ['user_id', 'item_id','rating', 'timestamp']
-rating = pd.read_csv('ml-100k/u.data', sep='\t' ,header=None, names=rating_col)
+rating = pd.read_csv('ml-100k/u1.base', sep='\t' ,header=None, names=rating_col)
 n_r = rating.shape[0]
 
 # 사용자 노드 생성
