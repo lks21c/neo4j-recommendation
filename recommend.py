@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import pandas as pd
-import numpy as np
-import matplotlib as plt
 from py2neo import Graph
 
 graph = Graph('http://neo4j:melon123!@localhost:7474/db/data/')
 
 total = 943
 topK = 3
+userId = 35
 
 query = (
         'MATCH (b:User)-[r:Has_rated]->(m:Movie), (b)-[s:SIMILARITY]-(a:User {user_id:{user_id1}}) '
@@ -22,6 +20,6 @@ query = (
         )
 
 tx = graph.cypher.begin()
-tx.append(query, {'user_id1': 1, 'topK': topK})
+tx.append(query, {'user_id1': userId, 'topK': topK})
 result = tx.commit()
 print result
