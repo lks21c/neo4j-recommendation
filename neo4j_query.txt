@@ -31,8 +31,8 @@ DELETE r
 
 # User1이 안본영화 추천
 
-MATCH (b:User)-[r:RATED]->(m:Movie), (b)-[s:SIMILARITY]-(a:User {user_id:1})
-WHERE NOT((a)-[:RATED]->(m))
+MATCH (b:User)-[r:Has_rated]->(m:Movie), (b)-[s:SIMILARITY]-(a:User {user_id:1})
+WHERE NOT((a)-[:Has_rated]->(m))
 WITH m, s.similarity AS similarity, r.rating AS rating
 ORDER BY m.name, similarity DESC
 WITH m.name AS movie, COLLECT(rating)[0..3] AS ratings
