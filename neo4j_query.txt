@@ -1,0 +1,36 @@
+
+# 유저 2명의유사도
+
+MATCH (p1:User {user_id:1})-[r1:Has_rated]->(m:Movie)<-[r2:Has_rated]-(p2:User {user_id:2})
+RETURN m.title AS Movie, r1.rating AS `u1's Rating`, r2.rating AS `u2's Rating`
+
+# 유저 2명의 코사인 유사도 Insert
+
+MATCH (p1:User {user_id:1})-[x:Has_rated]->(m:Movie)<-[y:Has_rated]-(p2:User {user_id:2})
+WITH SUM(x.rating * y.rating) AS xyDotProduct,
+ SQRT(REDUCE(xDot = 0.0, a IN COLLECT(x.rating) | xDot + a^2)) AS xLength,
+ SQRT(REDUCE(yDot = 0.0, b IN COLLECT(y.rating) | yDot + b^2)) AS yLength,
+ p1, p2
+MERGE (p1)-[s:SIMILARITY]-(p2)
+SET s.similarity = xyDotProduct / (xLength * yLength)
+
+# 전체 유사도 Insert
+MATCH (p1:User )-[x:Has_rated]->(m:Movie)<-[y:Has_rated]-(p2:User)
+WITH SUM(x.rating * y.rating) AS xyDotProduct,
+ SQRT(REDUCE(xDot = 0.0, a IN COLLECT(x.rating) | xDot + a^2)) AS xLength,
+ SQRT(REDUCE(yDot = 0.0, b IN COLLECT(y.rating) | yDot + b^2)) AS yLength,
+ p1, p2
+MERGE (p1)-[s:SIMILARITY]-(p2)
+SET s.similarity = xyDotProduct / (xLength * yLength)
+
+# 사용자 간 유사도 조회
+MATCH (p1:User {user_id:1})-[s:SIMILARITY]-(p2:User {user_id:2})
+RETURN s.similarity AS 'Cosine Similarity'
+
+# User1's KNN(5)
+
+MATCH (p1:User {user_id: 1})-[s:SIMILARITY]-(p2:User)
+WITH p2, s.similarity AS sim
+ORDER BY sim DESC
+LIMIT 5
+RETURN p2.user_id AS Neighbor, sim AS Similarity
